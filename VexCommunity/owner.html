@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VexCommunity - Owner Panel</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <script src="auth.js?v=4"></script>
+    <script>
+        // Strict Owner Check
+        if (Auth.getRole() !== 'owner') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <style>
+        body {
+            padding: 2rem;
+            transition: background 0.5s;
+            /* Force Owner Background */
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            /* Owner Container Styles */
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.15);
+            background: rgba(15, 15, 20, 0.85);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Gold glow effect on container */
+        .admin-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+            animation: shine 3s infinite linear;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        /* Dashboard Grid */
+        .owner-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            margin-top: 1rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.3s;
+            text-align: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        /* Updated SVG Icon Styles */
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.3s;
+        }
+
+        .stat-card:hover .stat-icon {
+            color: #f59e0b;
+            /* Gold on hover */
+        }
+
+        .stat-card.action-card:hover .stat-icon {
+            color: #ef4444;
+            /* Red on hover for danger */
+        }
+
+        /* Modern Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 34px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: #374151;
+            border: 1px solid #4b5563;
+            color: white;
+            border-radius: 5px;
+            box-sizing: border-box;
+            /* Fixes layout */
+            display: block;
+        }
+
+        input:checked+.slider {
+            background-color: #f59e0b;
+            border-color: #f59e0b;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(30px);
+        }
+
+        /* Buttons */
+        .btn-nuke {
+            background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.6);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            margin-top: 0.5rem;
+            z-index: 1;
+        }
+
+        .btn-nuke:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.8);
+            background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+        }
+
+        .btn-nuke:active {
+            transform: scale(0.98);
+        }
+
+        /* Pulse Animation */
+        .btn-nuke::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            border-radius: 8px;
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+
+            70% {
+                transform: scale(1.05);
+                opacity: 0.8;
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        .btn {
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            /* Owner specific button style override */
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-green {
+            background: var(--accent-green);
+        }
+
+        .btn-red {
+            background: #ef4444;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        /* Table Wrapper */
+        .admin-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #aaa;
+            min-width: 600px;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-table th {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* Modal etc from styles.css are still available but we'll include minimal modal CSS here or rely on link styles.css if it doesnt conflict too much. Actually we linked styles.css so careful with overrides. */
+
+        /* Modal Override */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Updated Modal Styles for Better Visibility */
+        .modal-content {
+            background-color: #1f2937;
+            margin: 5% auto;
+            /* More vertical space */
+            padding: 2.5rem;
+            /* More padding */
+            border: 1px solid #374151;
+            width: 90%;
+            max-width: 900px;
+            /* Significantly wider */
+            border-radius: 16px;
+            color: white;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Larger Text Area */
+        textarea {
+            width: 100%;
+            height: 400px;
+            /* Much taller */
+            background: #0f1115;
+            color: #4ade80;
+            /* Brighter green */
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #374151;
+            font-family: 'Consolas', monospace;
+            font-size: 1rem;
+            /* Larger text */
+            margin-bottom: 1.5rem;
+            resize: vertical;
+        }
+
+        /* Enlarge Dashboard Stats & Center Align */
+        .stat-info {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .stat-info h3 {
+            font-size: 0.9rem;
+            color: #9ca3af;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-info p {
+            font-size: 2.5rem;
+            /* Much larger numbers */
+            font-weight: 800;
+            margin: 0.5rem 0 0 0;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .gamemode-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <div>
+                <div style="display:flex; flex-direction:column; gap:5px;">
+                    <span
+                        style="font-size:0.9rem; color:#f59e0b; text-transform:uppercase; letter-spacing:2px; font-weight:bold;">God
+                        Mode Active</span>
+                    <span
+                        style="font-size:1.5rem; font-weight:bold; background: linear-gradient(to right, #f59e0b, #fff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 20px rgba(245,158,11,0.5);">
+                        Owner Control Center
+                    </span>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-red" onclick="Auth.logout()" style="margin-right:0.5rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="vertical-align:middle;">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+                <a href="index.html" class="btn"
+                    style="background:rgba(255,255,255,0.1); margin-right:0.5rem; text-decoration:none; display:inline-block;">&larr;
+                    Back</a>
+                <button class="btn btn-green" onclick="openAddModal()">+ Add New Player</button>
+                <button class="btn" style="background:var(--accent-blue);" onclick="generateFile()">
+                    <svg style="width:16px;height:16px;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Publish
+                </button>
+            </div>
+        </div>
+
+        <!-- DASHBOARD (With SVGs) -->
+        <div class="owner-dashboard">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Players</h3>
+                    <p id="stat-total">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3>Avg Points</h3>
+                    <p id="stat-avg">0</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3>Maintenance</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="maintToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="stat-card action-card">
+                <div class="stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <div class="stat-info">
+                    <h3>Danger Zone</h3>
+                    <button id="nukeBtn" class="btn-nuke">NUKE DATA</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Tier</th>
+                        <th>Points</th>
+                        <th>Region</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="playerTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- MODALS (Simplified for brevity but functional) -->
+        <div id="exportModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Publish Data</h2><span class="close-modal" onclick="closeExportModal()">&times;</span>
+                </div>
+                <p>Copy or Download below:</p>
+                <textarea id="exportCode" readonly onclick="this.select()"></textarea>
+                <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1rem;">
+                    <button class="btn btn-green" onclick="downloadFile()">Download File</button>
+                    <button class="btn btn-red" onclick="closeExportModal()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="playerFormModal" class="modal">
+            <div class="modal-content">
+                <h2 id="modalTitle">Add Player</h2>
+                <form id="playerForm" onsubmit="handleFormSubmit(event)">
+                    <input type="hidden" id="editIndex" value="-1">
+                    <div class="form-group"><label>Username</label><input type="text" id="pName" required></div>
+                    <div class="form-group"><label>UUID</label><input type="text" id="pUuid" required><small
+                            style="color:#aaa">From namemc.com</small></div>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                        <div class="form-group"><label>Main Tier</label><select id="pTier">
+                                <option value="grandmaster">Combat Grandmaster</option>
+                                <option value="master">Combat Master</option>
+                                <option value="ace">Combat Ace</option>
+                                <option value="specialist">Combat Specialist</option>
+                                <option value="cadet">Combat Cadet</option>
+                                <option value="novice">Combat Novice</option>
+                                <option value="rookie">Rookie</option>
+                            </select></div>
+                        <div class="form-group"><label>Points</label><input type="number" id="pPoints" required></div>
+                    </div>
+                    <div class="form-group"><label>Region</label><select id="pRegion">
+                            <option value="NA">NA</option>
+                            <option value="EU">EU</option>
+                            <option value="AS">AS</option>
+                            <option value="SA">SA</option>
+                        </select></div>
+                    <h3>Gamemode Ranks</h3>
+                    <div class="gamemode-inputs">
+                        <div class="form-group"><label>DMSMP</label><input type="text" id="gm_dmsmp"></div>
+                        <div class="form-group"><label>NETHSMP</label><input type="text" id="gm_nethsmp"></div>
+                        <div class="form-group"><label>NETHPOT</label><input type="text" id="gm_nethpot"></div>
+                        <div class="form-group"><label>SWORD</label><input type="text" id="gm_dmpot"></div>
+                        <div class="form-group"><label>CPVP</label><input type="text" id="gm_cpvp"></div>
+                        <div class="form-group"><label>MACE</label><input type="text" id="gm_mace"></div>
+                    </div>
+                    <div style="margin-top:2rem; display:flex; justify-content:flex-end; gap:1rem;">
+                        <button type="button" class="btn btn-red" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-green">Save Player</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="players.js"></script>
+    <script>
+        // Data Init
+        const localPreview = localStorage.getItem('vex_preview_data');
+        let appData = localPreview ? JSON.parse(localPreview) : (typeof PLAYERS_DATA !== 'undefined' ? [...PLAYERS_DATA] : []);
+
+        // Maintenance Init
+        const isMaintenance = localStorage.getItem('vex_maintenance') === 'true';
+        document.getElementById('maintToggle').checked = isMaintenance;
+
+        // Render Function
+        function renderTable() {
+            // Update Stats
+            document.getElementById('stat-total').innerText = appData.length;
+            const totalPoints = appData.reduce((sum, p) => sum + (p.points || 0), 0);
+            const avgPoints = appData.length ? Math.floor(totalPoints / appData.length) : 0;
+            document.getElementById('stat-avg').innerText = avgPoints;
+
+            // Render Table (reused logic)
+            const tbody = document.getElementById('playerTableBody');
+            tbody.innerHTML = '';
+            appData.forEach((player, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td><div style="display:flex; align-items:center; gap:0.5rem;"><img src="https://mc-heads.net/avatar/${player.uuid}/24" style="border-radius:4px;"> ${player.name}</div></td>
+                <td style="text-transform:capitalize">${player.tier}</td>
+                <td>${player.points}</td>
+                <td>${player.region}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn btn-sm" onclick="editPlayer(${index})">Edit</button>
+                        <button class="btn btn-sm btn-red" onclick="deletePlayer(${index})">Delete</button>
+                    </div>
+                </td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // --- Owner Logic ---
+        document.getElementById('maintToggle').addEventListener('change', (e) => {
+            localStorage.setItem('vex_maintenance', e.target.checked);
+            if (e.target.checked) alert("Maintenance Mode ENABLED.");
+        });
+
+        document.getElementById('nukeBtn').onclick = () => {
+            if (confirm("⚠️ CRITICAL WARNING ⚠️\n\nReally delete ALL DATA?")) {
+                appData = [];
+                saveToPreview();
+                renderTable();
+                alert("Data Deleted.");
+            }
+        };
+
+        // --- Standard Admin Functions (Duplicate from admin.html) ---
+        function openAddModal() { document.getElementById('editIndex').value = -1; document.getElementById('modalTitle').textContent = 'Add Player'; document.getElementById('playerForm').reset(); document.getElementById('playerFormModal').style.display = 'block'; }
+        function closeModal() { document.getElementById('playerFormModal').style.display = 'none'; }
+
+        function editPlayer(index) {
+            const p = appData[index];
+            document.getElementById('editIndex').value = index;
+            document.getElementById('modalTitle').textContent = 'Edit Player';
+            document.getElementById('pName').value = p.name;
+            document.getElementById('pUuid').value = p.uuid;
+            document.getElementById('pTier').value = p.tier;
+            document.getElementById('pPoints').value = p.points;
+            document.getElementById('pRegion').value = p.region;
+            if (p.gamemodes) {
+                document.getElementById('gm_dmsmp').value = p.gamemodes.dmsmp || '';
+                document.getElementById('gm_nethsmp').value = p.gamemodes.nethsmp || '';
+                document.getElementById('gm_nethpot').value = p.gamemodes.nethpot || '';
+                document.getElementById('gm_dmpot').value = p.gamemodes.dmpot || '';
+                document.getElementById('gm_cpvp').value = p.gamemodes.cpvp || '';
+                document.getElementById('gm_mace').value = p.gamemodes.mace || '';
+            }
+            document.getElementById('playerFormModal').style.display = 'block';
+        }
+
+        function deletePlayer(index) { if (confirm('Delete?')) { appData.splice(index, 1); saveToPreview(); renderTable(); } }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const index = parseInt(document.getElementById('editIndex').value);
+            const gamemodes = {
+                dmsmp: document.getElementById('gm_dmsmp').value.toUpperCase(),
+                nethsmp: document.getElementById('gm_nethsmp').value.toUpperCase(),
+                nethpot: document.getElementById('gm_nethpot').value.toUpperCase(),
+                dmpot: document.getElementById('gm_dmpot').value.toUpperCase(),
+                cpvp: document.getElementById('gm_cpvp').value.toUpperCase(),
+                mace: document.getElementById('gm_mace').value.toUpperCase()
+            };
+            const tiersArray = [gamemodes.dmsmp, gamemodes.nethsmp, gamemodes.nethpot, gamemodes.dmpot, gamemodes.cpvp, gamemodes.mace].filter(t => t && t.trim() !== '');
+
+            const newPlayer = {
+                rank: index === -1 ? appData.length + 1 : appData[index].rank,
+                name: document.getElementById('pName').value,
+                uuid: document.getElementById('pUuid').value,
+                tier: document.getElementById('pTier').value,
+                tierName: document.getElementById('pTier').value === 'rookie' ? 'Rookie' : ("Combat " + document.getElementById('pTier').value.charAt(0).toUpperCase() + document.getElementById('pTier').value.slice(1)),
+                points: parseInt(document.getElementById('pPoints').value),
+                region: document.getElementById('pRegion').value,
+                tiers: tiersArray,
+                gamemodes: gamemodes
+            };
+
+            if (index === -1) appData.push(newPlayer); else appData[index] = newPlayer;
+            saveToPreview(); closeModal(); renderTable();
+        }
+
+        function saveToPreview() { localStorage.setItem('vex_preview_data', JSON.stringify(appData)); }
+
+        // Smarter Publish Logic
+        async function generateFile() {
+            const fileContent = `const PLAYERS_DATA = ${JSON.stringify(appData, null, 4)};`;
+
+            // 1. Try Server (Auto Publish)
+            try {
+                const response = await fetch('http://localhost:3000/api/save-players', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(appData)
+                });
+                if (response.ok) {
+                    alert('✅ Published Successfully to Server! (Live Updated)');
+                    return; // Stop here if server works
+                }
+            } catch (e) {
+                console.log('Server offline or unavailable, trying local save...');
+            }
+
+            // 2. Try File System Access API (Direct Save)
+            if ('showSaveFilePicker' in window) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'players.js',
+                        types: [{ description: 'JavaScript Data File', accept: { 'text/javascript': ['.js'] } }]
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(fileContent);
+                    await writable.close();
+                    alert('✅ File Saved Successfully!');
+                    return; // Stop here if file save works
+                } catch (err) {
+                    if (err.name === 'AbortError') return; // User cancelled, do nothing
+                    console.error("File Save Error:", err);
+                    // If error (not cancelled), fall through to modal
+                }
+            }
+
+            // 3. Fallback: Show Manual Export Modal
+            const modal = document.getElementById('exportModal');
+            document.getElementById('exportCode').value = fileContent;
+            modal.style.display = 'block';
+        }
+        function closeExportModal() { document.getElementById('exportModal').style.display = 'none'; }
+        function downloadFile() {
+            const content = document.getElementById('exportCode').value;
+            const blob = new Blob([content], { type: 'text/javascript' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'players.js'; a.click();
+        }
+
+        renderTable();
+    </script>
+</body>
+
+</html>

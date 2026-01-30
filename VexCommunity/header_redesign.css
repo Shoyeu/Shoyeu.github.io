@@ -1,0 +1,57 @@
+/* Floating Header Modifications */
+.header.floating-header {
+    background: rgba(10, 14, 23, 0.6);
+    backdrop-filter: blur(12px);
+    width: 95%;
+    max-width: 1200px;
+    margin: 1.5rem auto 0;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: sticky;
+    top: 1.5rem;
+    padding: 0.8rem 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.header-content {
+    gap: 1.5rem;
+}
+
+.nav {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.4rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-link {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.nav-link.active {
+    background: var(--accent-purple);
+    color: white;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.admin-lock {
+    opacity: 0.3;
+    transition: opacity 0.3s;
+    margin-left: 0.5rem;
+}
+
+.admin-lock:hover {
+    opacity: 1;
+}
+
+.admin-lock svg {
+    display: block;
+}
+
+/* Enhancing general aesthetics for "More Interesting" look */
+.main-content {
+    margin-top: 3rem;
+    /* Extra space for floating header */
+}

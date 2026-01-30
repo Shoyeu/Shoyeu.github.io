@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VexCommunity - Admin Panel</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <script src="auth.js?v=3"></script>
+    <script>
+        Auth.protect();
+        // Standard Admin Panel
+    </script>
+    <style>
+        body {
+            padding: 2rem;
+            transition: background 0.5s;
+        }
+
+        /* --- OWNER MODE: VISUAL OVERHAUL --- */
+        body.owner-mode {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        body.owner-mode .admin-container {
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.15);
+            background: rgba(15, 15, 20, 0.85);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Gold glow effect on container */
+        body.owner-mode .admin-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #f59e0b, transparent);
+            animation: shine 3s infinite linear;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Dashboard Grid */
+        .owner-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            margin-top: 2rem;
+            /* Increased top margin for visibility */
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            /* Stack icon and text vertically */
+            justify-content: center;
+            /* Center vertically */
+            align-items: center;
+            /* Center horizontally */
+            gap: 0.5rem;
+            transition: transform 0.3s;
+            text-align: center;
+            /* Ensure text is centered */
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+        }
+
+        .stat-info h3 {
+            font-size: 0.8rem;
+            color: #ccc;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .stat-info p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: #fff;
+        }
+
+        /* Danger Zone Card */
+        .stat-card.action-card {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            justify-content: space-between;
+        }
+
+        .btn-nuke {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.8rem;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-nuke:hover {
+            background: #dc2626;
+            transform: scale(1.05);
+        }
+
+        /* Switch Toggle Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #f59e0b;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(26px);
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 1rem;
+        }
+
+        .btn {
+            background: var(--accent-purple);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-green {
+            background: var(--accent-green);
+        }
+
+        .btn-red {
+            background: #ef4444;
+        }
+
+        /* Table Styles */
+        .admin-table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-secondary);
+            /* removed margin-bottom from here as wrapper handles it */
+            min-width: 600px;
+            /* Ensure table doesn't squish too much */
+        }
+
+        .admin-table th,
+        .admin-table td {
+            text-align: left;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .admin-table th {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        /* Form Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            margin: 5vh auto;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 16px;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-glass);
+            color: var(--text-primary);
+        }
+
+        .gamemode-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .export-area {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background: #000;
+            color: #0f0;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var (--border-glass);
+            font-family: monospace;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Admin Panel</h1>
+            <div>
+                <button class="btn btn-red" onclick="Auth.logout()" style="margin-right:0.5rem;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="vertical-align:middle;">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </button>
+                <a href="index.html" class="btn"
+                    style="background:var(--bg-secondary); margin-right:0.5rem; text-decoration:none; display:inline-block;">&larr;
+                    Back</a>
+                <button class="btn btn-green" onclick="openAddModal()">+ Add New Player</button>
+                <button class="btn" style="background:var(--accent-blue);" onclick="generateFile()">
+                    <svg style="width:16px;height:16px;vertical-align:middle;margin-right:4px;" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Publish
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>Tier</th>
+                        <th>Points</th>
+                        <th>Region</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="playerTableBody">
+                    <!-- Driven by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Export/Publish Modal -->
+        <div id="exportModal" class="modal">
+            <div class="modal-content" style="max-width: 800px;">
+                <div class="modal-header">
+                    <h2>Publish / Export Data</h2>
+                    <span class="close-modal" onclick="closeExportModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p style="color:var(--text-muted); margin-bottom:1rem;">
+                        Since automatic saving is not supported in this browser, please:
+                        <br>1. Click <b>Download File</b> below.
+                        <br>2. Replace your existing <code>players.js</code> with the downloaded file.
+                    </p>
+                    <textarea id="exportCode" readonly onclick="this.select()"></textarea>
+                    <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1rem;">
+                        <button class="btn btn-green" onclick="downloadFile()">Download File</button>
+                        <button class="btn btn-red" onclick="closeExportModal()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Form Modal -->
+    <div id="playerFormModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Add Player</h2>
+            <form id="playerForm" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="editIndex" value="-1">
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="pName" required>
+                </div>
+                <div class="form-group">
+                    <label>UUID (NameMC)</label>
+                    <input type="text" id="pUuid" required>
+                    <small style="color:var(--text-muted)">Get from namemc.com</small>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                    <div class="form-group">
+                        <label>Main Tier</label>
+                        <select id="pTier">
+                            <option value="grandmaster">Combat Grandmaster</option>
+                            <option value="master">Combat Master</option>
+                            <option value="ace">Combat Ace</option>
+                            <option value="specialist">Combat Specialist</option>
+                            <option value="cadet">Combat Cadet</option>
+                            <option value="novice">Combat Novice</option>
+                            <option value="rookie">Rookie</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Points</label>
+                        <input type="number" id="pPoints" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Region</label>
+                    <select id="pRegion">
+                        <option value="NA">NA</option>
+                        <option value="EU">EU</option>
+                        <option value="AS">AS</option>
+                        <option value="SA">SA</option>
+                    </select>
+                </div>
+
+                <h3>Gamemode Ranks</h3>
+                <div class="gamemode-inputs">
+                    <div class="form-group"><label>DMSMP</label><input type="text" id="gm_dmsmp" placeholder="e.g. HT1">
+                    </div>
+                    <div class="form-group"><label>NETHSMP</label><input type="text" id="gm_nethsmp"
+                            placeholder="e.g. HT1"></div>
+                    <div class="form-group"><label>NETHPOT</label><input type="text" id="gm_nethpot"
+                            placeholder="e.g. LT1"></div>
+                    <div class="form-group"><label>SWORD</label><input type="text" id="gm_dmpot" placeholder="e.g. LT1">
+                    </div>
+                    <div class="form-group"><label>CPVP</label><input type="text" id="gm_cpvp" placeholder="e.g. HT1">
+                    </div>
+                    <div class="form-group"><label>MACE</label><input type="text" id="gm_mace" placeholder="e.g. HT1">
+                    </div>
+                </div>
+
+                <div style="margin-top:2rem; display:flex; justify-content:flex-end; gap:1rem;">
+                    <button type="button" class="btn btn-red" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-green">Save Player</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="players.js"></script>
+    <script>
+        // Local copy of data
+        // Try to load from PreviewStorage first to sync with Preview Mode logic
+        const localPreview = localStorage.getItem('vex_preview_data');
+        let appData = localPreview ? JSON.parse(localPreview) : (typeof PLAYERS_DATA !== 'undefined' ? [...PLAYERS_DATA] : []);
+
+        function renderTable() {
+            const tbody = document.getElementById('playerTableBody');
+            tbody.innerHTML = '';
+
+            appData.forEach((player, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <img src="https://mc-heads.net/avatar/${player.uuid}/24" style="border-radius:4px;">
+                        ${player.name}
+                    </div>
+                </td>
+                <td style="text-transform:capitalize">${player.tier}</td>
+                <td>${player.points}</td>
+                <td>${player.region}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn btn-sm" onclick="editPlayer(${index})">Edit</button>
+                        <button class="btn btn-sm btn-red" onclick="deletePlayer(${index})">Delete</button>
+                    </div>
+                </td>
+            `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openAddModal() {
+            document.getElementById('editIndex').value = -1;
+            document.getElementById('modalTitle').textContent = 'Add Player';
+            document.getElementById('playerForm').reset();
+            document.getElementById('playerFormModal').style.display = 'block';
+        }
+
+        function editPlayer(index) {
+            const p = appData[index];
+            document.getElementById('editIndex').value = index;
+            document.getElementById('modalTitle').textContent = 'Edit Player';
+
+            document.getElementById('pName').value = p.name;
+            document.getElementById('pUuid').value = p.uuid;
+            document.getElementById('pTier').value = p.tier;
+            document.getElementById('pPoints').value = p.points;
+            document.getElementById('pRegion').value = p.region;
+
+            // Gamemodes
+            if (p.gamemodes) {
+                document.getElementById('gm_dmsmp').value = p.gamemodes.dmsmp || '';
+                document.getElementById('gm_nethsmp').value = p.gamemodes.nethsmp || '';
+                document.getElementById('gm_nethpot').value = p.gamemodes.nethpot || '';
+                document.getElementById('gm_dmpot').value = p.gamemodes.dmpot || '';
+                document.getElementById('gm_cpvp').value = p.gamemodes.cpvp || '';
+                document.getElementById('gm_mace').value = p.gamemodes.mace || '';
+            }
+
+            document.getElementById('playerFormModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('playerFormModal').style.display = 'none';
+        }
+
+        function deletePlayer(index) {
+            if (confirm('Are you sure?')) {
+                appData.splice(index, 1);
+                // Re-calculate ranks? Or just leave index as is?
+                // Usually we just sort by index or points.
+                // For now, re-rendering implies re-indexed 1..N visually.
+                saveToPreview();
+                renderTable();
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const index = parseInt(document.getElementById('editIndex').value);
+
+            const gamemodes = {
+                dmsmp: document.getElementById('gm_dmsmp').value.toUpperCase(),
+                nethsmp: document.getElementById('gm_nethsmp').value.toUpperCase(),
+                nethpot: document.getElementById('gm_nethpot').value.toUpperCase(),
+                dmpot: document.getElementById('gm_dmpot').value.toUpperCase(),
+                cpvp: document.getElementById('gm_cpvp').value.toUpperCase(),
+                mace: document.getElementById('gm_mace').value.toUpperCase()
+            };
+
+            // Construct display tiers array logic
+            // Filter out empty values
+            const tiersArray = [
+                gamemodes.dmsmp, gamemodes.nethsmp, gamemodes.nethpot,
+                gamemodes.dmpot, gamemodes.cpvp, gamemodes.mace
+            ].filter(t => t && t.trim() !== '');
+
+            const newPlayer = {
+                rank: index === -1 ? appData.length + 1 : appData[index].rank, // Simple logic
+                name: document.getElementById('pName').value,
+                uuid: document.getElementById('pUuid').value,
+                tier: document.getElementById('pTier').value,
+                tierName: document.getElementById('pTier').value === 'rookie' ? 'Rookie' : ("Combat " + document.getElementById('pTier').value.charAt(0).toUpperCase() + document.getElementById('pTier').value.slice(1)),
+                points: parseInt(document.getElementById('pPoints').value),
+                region: document.getElementById('pRegion').value,
+                tiers: tiersArray,
+                gamemodes: gamemodes
+            };
+
+            if (index === -1) {
+                appData.push(newPlayer);
+            } else {
+                appData[index] = newPlayer;
+            }
+
+            saveToPreview();
+            closeModal();
+            renderTable();
+        }
+
+        function saveToPreview() {
+            localStorage.setItem('vex_preview_data', JSON.stringify(appData));
+        }
+
+        async function generateFile() {
+            const fileContent = `// ===========================================
+// VexCommunity Rankings - Player Database
+// ===========================================
+// Ganti file ini dengan hasil export dari Admin Panel
+const PLAYERS_DATA = ${JSON.stringify(appData, null, 4)};`;
+
+            // Try Server Auto-Publish (Priority)
+            try {
+                // Use absolute URL so it works even if you are on 127.0.0.1:5500 (VS Code Live Server)
+                const response = await fetch('http://localhost:3000/api/save-players', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(appData)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('✅ Published Successfully to Server! Refresh index.html to see changes.');
+                        localStorage.removeItem('vex_preview_data'); // Clear preview since it's live
+                        return;
+                    }
+                }
+            } catch (serverErr) {
+                console.log('Server publish unavailable, falling back to local file access.');
+            }
+
+            // Try File System Access API (Modern Browsers)
+            if ('showSaveFilePicker' in window) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: 'players.js',
+                        types: [{
+                            description: 'JavaScript File',
+                            accept: { 'text/javascript': ['.js'] },
+                        }],
+                    });
+                    const writable = await handle.createWritable();
+                    await writable.write(fileContent);
+                    await writable.close();
+                    alert('File saved successfully! Refresh index.html to see changes.');
+                    return; // Stop here if successful
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        console.error('Save File failed:', err);
+                        // Fallback to modal if error
+                    } else {
+                        return; // User cancelled
+                    }
+                }
+            }
+
+            // Fallback for non-supported browsers or error cases
+            const modal = document.getElementById('exportArea'); // Assuming exportArea is the modal
+            const textarea = document.getElementById('outputCode'); // Assuming outputCode is the textarea inside exportArea
+            textarea.value = fileContent;
+            modal.style.display = 'block';
+        }
+
+        function downloadFile() {
+            const content = document.getElementById('outputCode').value;
+            const blob = new Blob([content], { type: 'text/javascript' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'players.js';
+            a.click();
+        }
+
+        // Init
+        window.onload = renderTable;
+
+    </script>
+
+</body>
+
+</html>

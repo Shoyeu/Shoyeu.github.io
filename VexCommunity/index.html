@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="VexCommunity - Minecraft Combat Rankings. Check the top players ranked by their combat skills across different game modes.">
+    <title>VexCommunity - Minecraft Combat Rankings</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/webp"
+        href="https://cdn.discordapp.com/avatars/1458371240644313130/60baff4466f7c4d3151f1477c354c2a6.webp?size=4096">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="modal.css">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-gradient"></div>
+        <div class="bg-particles"></div>
+    </div>
+
+    <!-- Header -->
+    <!-- Header -->
+    <header class="header floating-header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="https://cdn.discordapp.com/avatars/1458371240644313130/60baff4466f7c4d3151f1477c354c2a6.webp?size=128"
+                    alt="VexCommunity Logo">
+                <span class="logo-text">VexCommunity</span>
+            </div>
+            <nav class="nav play-font">
+                <a href="#" class="nav-link active">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    </svg>
+                    Home
+                </a>
+                <a href="#" class="nav-link" id="rulesBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    Rules
+                </a>
+                <a href="https://discord.gg/GfYsVdtyZs" class="nav-link" target="_blank">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Discord
+                </a>
+            </nav>
+            <div class="search-box">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Search player...">
+            </div>
+
+            <button id="infoBtn" class="btn-info">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Information
+            </button>
+            <a href="login.html" class="admin-lock" title="Admin Login">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)"
+                    stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="category-tab active" data-category="overall">
+                <span class="tab-text" style="font-size: 1rem; font-weight: 800;">OVERALL</span>
+            </button>
+            <button class="category-tab" data-category="dmsmp">
+                <img src="https://files.catbox.moe/k1wmty.svg" alt="DMSMP" class="tab-icon-img">
+                <span class="tab-text">DMSMP</span>
+            </button>
+            <button class="category-tab" data-category="nethsmp">
+                <img src="https://files.catbox.moe/4v1v68.svg" alt="NETHSMP" class="tab-icon-img">
+                <span class="tab-text">NETHSMP</span>
+            </button>
+            <button class="category-tab" data-category="nethpot">
+                <img src="https://files.catbox.moe/dck1k8.svg" alt="NETHPOT" class="tab-icon-img">
+                <span class="tab-text">NETHPOT</span>
+            </button>
+            <button class="category-tab" data-category="dmpot">
+                <img src="https://img.icons8.com/ios-filled/50/a855f7/sword.png" alt="SWORD" class="tab-icon-img">
+                <span class="tab-text">SWORD</span>
+            </button>
+            <button class="category-tab" data-category="cpvp">
+                <img src="https://files.catbox.moe/f8nu9z.svg" alt="CPVP" class="tab-icon-img">
+                <span class="tab-text">CPVP</span>
+            </button>
+            <button class="category-tab" data-category="mace">
+                <img src="https://files.catbox.moe/j1khcp.svg" alt="MACE" class="tab-icon-img">
+                <span class="tab-text">MACE</span>
+            </button>
+        </div>
+
+        <!-- Server Info Bar -->
+        <div class="info-bar">
+            <div class="info-item">
+                <span class="info-label">Total Players</span>
+                <span class="info-value" id="totalPlayers">0</span>
+            </div>
+            <!-- Server IP Removed as requested -->
+        </div>
+
+        <!-- Rankings Table -->
+        <div class="rankings-container">
+            <div class="rankings-header">
+                <div class="col-rank">#</div>
+                <div class="col-player">PLAYER</div>
+                <div class="col-region">REGION</div>
+                <div class="col-tiers">GAMEMODE</div>
+            </div>
+            <div class="rankings-body" id="rankingsBody">
+                <!-- Player rows will be inserted here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Player Details Modal (Content Injected by JS) -->
+    <div id="playerModal" class="modal" onclick="if(event.target === this) this.style.display='none'">
+        <!-- Content will be replaced by openPlayerModal() -->
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 VexCommunity. All rights reserved.</p>
+    </footer>
+
+    <!-- Information Modal -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Information</h2>
+                <div class="modal-tabs">
+                    <button class="modal-tab active" data-tab="titles">Titles</button>
+                    <button class="modal-tab" data-tab="points">Points</button>
+                </div>
+                <span class="close-modal close-info-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Titles Tab -->
+                <div id="tab-titles" class="tab-content active">
+                    <!-- Header removed -->
+                    <div class="title-list">
+                        <div class="title-item">
+                            <img src="https://files.catbox.moe/wt42ry.webp" alt="GM" class="title-icon-lg">
+                            <div class="title-details">
+                                <div class="title-name grandmaster">Combat Grandmaster</div>
+                                <div class="title-desc">Obtained 400+ total points.</div>
+                            </div>
+                        </div>
+
+                        <div class="title-item">
+                            <img src="https://files.catbox.moe/fn7fsh.webp" alt="Master" class="title-icon-lg">
+                            <div class="title-details">
+                                <div class="title-name master">Combat Master</div>
+                                <div class="title-desc">Obtained 250+ total points.</div>
+                            </div>
+                        </div>
+
+                        <div class="title-item">
+                            <img src="https://files.catbox.moe/52livs.webp" alt="Ace" class="title-icon-lg">
+                            <div class="title-details">
+                                <div class="title-name ace">Combat Ace</div>
+                                <div class="title-desc">Obtained 100+ total points.</div>
+                            </div>
+                        </div>
+
+                        <div class="title-item">
+                            <img src="https://files.catbox.moe/jx50dt.svg" alt="Specialist" class="title-icon-lg">
+                            <div class="title-details">
+                                <div class="title-name specialist" style="color:#a855f7;">Combat Specialist</div>
+                                <div class="title-desc">Obtained 50+ total points.</div>
+                            </div>
+                        </div>
+
+                        <div class="title-item">
+                            <img src="https://files.catbox.moe/53gu84.svg" alt="Cadet" class="title-icon-lg">
+                            <div class="title-details">
+                                <div class="title-name cadet" style="color:#818cf8;">Combat Cadet</div>
+                                <div class="title-desc">Obtained 20+ total points.</div>
+                            </div>
+                        </div>
+
+                        <div class="title-item">
+                            <img src="https://files.catbox.moe/wwpcz6.svg" alt="Novice" class="title-icon-lg">
+                            <div class="title-details">
+                                <div class="title-name novice" style="color:#60a5fa;">Combat Novice</div>
+                                <div class="title-desc">Obtained 10+ total points.</div>
+                            </div>
+                        </div>
+
+                        <div class="title-item">
+                            <img src="https://files.catbox.moe/xvs503.svg" alt="Rookie" class="title-icon-lg"
+                                style="filter:grayscale(1);">
+                            <div class="title-details">
+                                <div class="title-name rookie" style="color:#9ca3af;">Rookie</div>
+                                <div class="title-desc">Starting rank for players with less than 10 points.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Points Tab -->
+                <div id="tab-points" class="tab-content" style="display:none;">
+                    <!-- Header removed -->
+
+                    <div class="points-list">
+                        <!-- Tier 1 -->
+                        <div class="point-group">
+                            <div class="point-header" style="color:#f59e0b;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M5 2h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V3a1 1 0 011-1zm1 4v2a6 6 0 0012 0V6H6zm14 2a2 2 0 00-2-2h-1v2a4 4 0 01-4 4H9a4 4 0 01-4-4V6H4a2 2 0 00-2 2v2a2 2 0 002 2h1a8 8 0 0014 0h1a2 2 0 002-2V8z" />
+                                </svg>
+                                Tier 1
+                            </div>
+                            <div class="point-values" style="border-left-color:#f59e0b;">
+                                <div class="point-badge gold">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                    </svg>
+                                    60 Points
+                                </div>
+                                <div class="point-badge gold">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                    </svg>
+                                    45 Points
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tier 2 -->
+                        <div class="point-group">
+                            <div class="point-header" style="color:#94a3b8;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M5 2h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V3a1 1 0 011-1zm1 4v2a6 6 0 0012 0V6H6zm14 2a2 2 0 00-2-2h-1v2a4 4 0 01-4 4H9a4 4 0 01-4-4V6H4a2 2 0 00-2 2v2a2 2 0 002 2h1a8 8 0 0014 0h1a2 2 0 002-2V8z" />
+                                </svg>
+                                Tier 2
+                            </div>
+                            <div class="point-values" style="border-left-color:#94a3b8;">
+                                <div class="point-badge silver">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                    </svg>
+                                    30 Points
+                                </div>
+                                <div class="point-badge silver">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                    </svg>
+                                    20 Points
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tier 3 -->
+                        <div class="point-group">
+                            <div class="point-header" style="color:#cd7f32;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M5 2h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V3a1 1 0 011-1zm1 4v2a6 6 0 0012 0V6H6zm14 2a2 2 0 00-2-2h-1v2a4 4 0 01-4 4H9a4 4 0 01-4-4V6H4a2 2 0 00-2 2v2a2 2 0 002 2h1a8 8 0 0014 0h1a2 2 0 002-2V8z" />
+                                </svg>
+                                Tier 3
+                            </div>
+                            <div class="point-values" style="border-left-color:#cd7f32;">
+                                <div class="point-badge bronze">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                    </svg>
+                                    10 Points
+                                </div>
+                                <div class="point-badge bronze">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                    </svg>
+                                    6 Points
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tier 4 -->
+                        <div class="point-group">
+                            <div class="point-header" style="color:#cbd5e1;">
+                                Tier 4
+                            </div>
+                            <div class="point-values" style="border-left-color:#cbd5e1;">
+                                <div class="point-badge default">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                    </svg>
+                                    4 Points
+                                </div>
+                                <div class="point-badge default">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                    </svg>
+                                    3 Points
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tier 5 -->
+                        <div class="point-group">
+                            <div class="point-header" style="color:#cbd5e1;">
+                                Tier 5
+                            </div>
+                            <div class="point-values" style="border-left-color:#cbd5e1;">
+                                <div class="point-badge default">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                    </svg>
+                                    2 Points
+                                </div>
+                                <div class="point-badge default">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <path d="M12 19V5M5 12l7-7 7 7" />
+                                    </svg>
+                                    1 Point
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div id="rulesModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>Rules</h2>
+                <span class="close-modal close-rules-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h3 style="margin-top:0;">Server Discord Rules</h3>
+                <div class="rules-container">
+                    <!-- General Rules -->
+                    <div class="rule-item">
+                        <div class="rule-title">1. General Conduct</div>
+                        <div class="rule-desc">
+                            <ul style="list-style-type: disc; padding-left: 20px; margin-top: 5px;">
+                                <li><strong>Be Respectful:</strong> Treat all members with respect. Harassment, hate
+                                    speech, and toxicity are strictly prohibited.</li>
+                                <li><strong>No NSFW Content:</strong> Keep the server safe for work. No inappropriate
+                                    images, links, or discussions.</li>
+                                <li><strong>No Spamming:</strong> Do not flood chat or voice channels. Avoid excessive
+                                    self-promotion.</li>
+                                <li><strong>Follow Staff Instructions:</strong> Listen to moderators and admins at all
+                                    times.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="margin: 1rem 0; height: 1px; background: var(--border-glass);"></div>
+
+                    <h3>Test Tier Rules</h3>
+
+                    <!-- Crystal PvP -->
+                    <div class="rule-item">
+                        <div class="rule-title"><img src="https://files.catbox.moe/f8nu9z.svg"
+                                style="width:24px; vertical-align:middle; margin-right:8px;"> Crystal PvP Testing Kit &
+                            Rules</div>
+                        <div class="rule-desc">
+                            <ul style="list-style-type: disc; padding-left: 20px; margin-bottom: 10px;">
+                                <li>No CW/HACKS in the middle of Testing</li>
+                                <li>No tipped weakness/harming arrows</li>
+                                <li>No bows</li>
+                                <li>No rekitting mid fight</li>
+                                <li>No tping ppl mid testing</li>
+                                <li>No turtle master pots</li>
+                                <li>No combat logging for no reason</li>
+                            </ul>
+                            <strong>ITEM:</strong>
+                            <ul style="list-style-type: circle; padding-left: 20px; color: var(--text-muted);">
+                                <li>End Crystal (Maximum of 4 stack)</li>
+                                <li>Obsidian (Maximum of 4 stack)</li>
+                                <li>Totem of Undying (Maximum of 14 totems)</li>
+                                <li>Ender Pearl (Maximum of 6 stack)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Neth Pot -->
+                    <div class="rule-item">
+                        <div class="rule-title"><img src="https://files.catbox.moe/dck1k8.svg"
+                                style="width:24px; vertical-align:middle; margin-right:8px;"> Neth Pot Testing Kit &
+                            Rules</div>
+                        <div class="rule-desc">
+                            <ul style="list-style-type: disc; padding-left: 20px;">
+                                <li>No macropots</li>
+                                <li>No ping spoof</li>
+                                <li>No cheating</li>
+                                <li>No Leaving mid test</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- SMP Testing -->
+                    <div class="rule-item">
+                        <div class="rule-title"><img src="https://files.catbox.moe/k1wmty.svg"
+                                style="width:24px; vertical-align:middle; margin-right:8px;"> SMP Testing Rules :
+                            Diamond SMP and Netherite SMP</div>
+                        <div class="rule-desc">
+                            <ul style="list-style-type: disc; padding-left: 20px;">
+                                <li>No Freelook Mod</li>
+                                <li>No Leaving Mid Test</li>
+                                <li>No Macro</li>
+                                <li>No Hack Client</li>
+                                <li>No Durability Texture Pack or Mod</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="players.js"></script>
+    <script src="auth.js?v=4"></script>
+    <script src="script.js"></script>
+    <script>
+        // Check if already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof Auth !== 'undefined' && Auth.check()) {
+                const role = Auth.getRole();
+                const adminBtn = document.querySelector('.admin-lock');
+                if (adminBtn) {
+                    adminBtn.href = role === 'owner' ? 'owner.html' : 'admin.html';
+                    adminBtn.innerHTML = `
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" style="margin-right:0px;">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>`;
+                    adminBtn.title = "Go to Dashboard";
+                    adminBtn.style.borderColor = "#f59e0b";
+                }
+            }
+        });
+    </script>
+    <style>
+        /* Modern Floating Maintenance Widget */
+        .maintenance-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-left: 4px solid #f59e0b;
+            padding: 16px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            color: white;
+            z-index: 10000;
+            transform: translateY(150%);
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+            font-family: 'Inter', sans-serif;
+            max-width: 380px;
+        }
+
+        .maintenance-widget.visible {
+            transform: translateY(0);
+        }
+
+        .maintenance-icon-box {
+            width: 44px;
+            height: 44px;
+            background: rgba(245, 158, 11, 0.15);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .maintenance-icon-box svg {
+            color: #f59e0b;
+            animation: wrench-wiggle 2s ease-in-out infinite;
+        }
+
+        .maintenance-content h4 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 4px;
+        }
+
+        .maintenance-content p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+
+        @keyframes wrench-wiggle {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            25% {
+                transform: rotate(-10deg);
+            }
+
+            75% {
+                transform: rotate(10deg);
+            }
+        }
+    </style>
+    <script>
+        // Check Maintenance Mode
+        window.addEventListener('DOMContentLoaded', () => {
+            const isMaintenance = localStorage.getItem('vex_maintenance') === 'true';
+            if (isMaintenance) {
+                const widget = document.createElement('div');
+                widget.className = 'maintenance-widget visible';
+                widget.innerHTML = `
+                    <div class="maintenance-icon-box">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                        </svg>
+                    </div>
+                    <div class="maintenance-content">
+                        <h4>Maintenance Active</h4>
+                        <p>We are currently updating the rankings. Data may be unstable.</p>
+                    </div>
+                `;
+                document.body.appendChild(widget);
+            }
+        });
+    </script>
+</body>
+
+</html>
